@@ -133,7 +133,7 @@ class Application
             } else {
                 try {
                     $encoded = json_encode($callback, JSON_THROW_ON_ERROR);
-                } catch (JsonException $e) {
+                } catch (JsonException) {
                     $encoded = '[Ошибка кодирования]';
                 }
                 error_log(sprintf('[ЗАВЕРШЕНИЕ РАБОТЫ] Недопустимый формат обратного вызова: %s. Ожидался ["Класс", "метод"]', $encoded));
@@ -185,7 +185,7 @@ class Application
         try {
             $logEntry = json_encode($context, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE) . "\n";
             file_put_contents($logPath, $logEntry, FILE_APPEND | LOCK_EX);
-        } catch (JsonException $jsonException) {
+        } catch (JsonException) {
             // Fallback при ошибке кодирования JSON
             $fallbackEntry = sprintf("[%s] %s: %s in %s:%d\n%s\n", $context['time'], $context['type'], $context['message'], $context['file'], $context['line'], $context['trace']);
             file_put_contents($logPath, $fallbackEntry, FILE_APPEND | LOCK_EX);
@@ -194,6 +194,10 @@ class Application
         }
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function boot(): void
     {
         foreach ($this->providers as $provider) {
