@@ -76,7 +76,7 @@ class Stream implements StreamInterface
     {
         set_error_handler(static function (int $errno, string $errstr) use ($path, $mode): bool {
             throw new RuntimeException(sprintf(
-                'Failed to open stream "%s" with mode "%s": %s',
+                'Не удалось открыть поток "%s" в режиме "%s": %s',
                 $path, $mode, $errstr
             ));
         });
@@ -85,7 +85,7 @@ class Stream implements StreamInterface
             $resource = fopen($path, $mode);
             if ($resource === false) {
                 throw new RuntimeException(sprintf(
-                    'fopen() returned false for path "%s" with mode "%s"',
+                    'Функция fopen() вернула false для пути "%s" с режимом "%s"',
                     $path, $mode
                 ));
             }

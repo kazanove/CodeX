@@ -32,7 +32,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     public array $uploadedFiles {
         get => $this->_uploadedFiles;
     }
-    public mixed $parsedBody {
+    public null $parsedBody {
         get => $this->_parsedBody;
     }
     public array $attributes {
