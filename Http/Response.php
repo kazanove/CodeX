@@ -11,47 +11,22 @@ use Psr\Http\Message\StreamInterface;
 
 class Response implements ResponseInterface
 {
-    private const array PHRASES = [
-        // 1xx Informational
+    private const array PHRASES = [// 1xx Informational
         100 => 'Continue', 101 => 'Switching Protocols', 102 => 'Processing', 103 => 'Early Hints',
 
         // 2xx Success
-        200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information',
-        204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content', 207 => 'Multi-Status',
-        208 => 'Already Reported', 226 => 'IM Used',
+        200 => 'OK', 201 => 'Created', 202 => 'Accepted', 203 => 'Non-Authoritative Information', 204 => 'No Content', 205 => 'Reset Content', 206 => 'Partial Content', 207 => 'Multi-Status', 208 => 'Already Reported', 226 => 'IM Used',
 
         // 3xx Redirection
-        300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other',
-        304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect', 308 => 'Permanent Redirect',
+        300 => 'Multiple Choices', 301 => 'Moved Permanently', 302 => 'Found', 303 => 'See Other', 304 => 'Not Modified', 305 => 'Use Proxy', 307 => 'Temporary Redirect', 308 => 'Permanent Redirect',
 
         // 4xx Client Errors
-        400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden',
-        404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable',
-        407 => 'Proxy Authentication Required', 408 => 'Request Timeout', 409 => 'Conflict',
-        410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed',
-        413 => 'Payload Too Large', 414 => 'URI Too Long', 415 => 'Unsupported Media Type',
-        416 => 'Range Not Satisfiable', 417 => 'Expectation Failed', 418 => 'I\'m a teapot',
-        421 => 'Misdirected Request', 422 => 'Unprocessable Entity', 423 => 'Locked',
-        424 => 'Failed Dependency', 425 => 'Too Early', 426 => 'Upgrade Required',
-        428 => 'Precondition Required', 429 => 'Too Many Requests',
-        431 => 'Request Header Fields Too Large', 451 => 'Unavailable For Legal Reasons',
+        400 => 'Bad Request', 401 => 'Unauthorized', 402 => 'Payment Required', 403 => 'Forbidden', 404 => 'Not Found', 405 => 'Method Not Allowed', 406 => 'Not Acceptable', 407 => 'Proxy Authentication Required', 408 => 'Request Timeout', 409 => 'Conflict', 410 => 'Gone', 411 => 'Length Required', 412 => 'Precondition Failed', 413 => 'Payload Too Large', 414 => 'URI Too Long', 415 => 'Unsupported Media Type', 416 => 'Range Not Satisfiable', 417 => 'Expectation Failed', 418 => 'I\'m a teapot', 421 => 'Misdirected Request', 422 => 'Unprocessable Entity', 423 => 'Locked', 424 => 'Failed Dependency', 425 => 'Too Early', 426 => 'Upgrade Required', 428 => 'Precondition Required', 429 => 'Too Many Requests', 431 => 'Request Header Fields Too Large', 451 => 'Unavailable For Legal Reasons',
 
         // 5xx Server Errors
-        500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway',
-        503 => 'Service Unavailable', 504 => 'Gateway Timeout',
-        505 => 'HTTP Version Not Supported', 506 => 'Variant Also Negotiates',
-        507 => 'Insufficient Storage', 508 => 'Loop Detected', 510 => 'Not Extended',
-        511 => 'Network Authentication Required',
-    ];
+        500 => 'Internal Server Error', 501 => 'Not Implemented', 502 => 'Bad Gateway', 503 => 'Service Unavailable', 504 => 'Gateway Timeout', 505 => 'HTTP Version Not Supported', 506 => 'Variant Also Negotiates', 507 => 'Insufficient Storage', 508 => 'Loop Detected', 510 => 'Not Extended', 511 => 'Network Authentication Required',];
 
     // === 1. БАЗОВЫЕ ПРИВАТНЫЕ СВОЙСТВА ===
-    private int $_statusCode;
-    private string $_reasonPhrase;
-    private string $_protocolVersion;
-    private array $_headers;
-    private StreamInterface $_body;
-
-    // === 2. ПУБЛИЧНЫЕ СВОЙСТВА С ГЕТТЕРАМИ ===
     public int $statusCode {
         get => $this->_statusCode;
     }
@@ -68,6 +43,13 @@ class Response implements ResponseInterface
         get => $this->_body;
     }
 
+    // === 2. ПУБЛИЧНЫЕ СВОЙСТВА С ГЕТТЕРАМИ ===
+    private int $_statusCode;
+    private string $_reasonPhrase;
+    private string $_protocolVersion;
+    private array $_headers;
+    private StreamInterface $_body;
+
     /**
      * @param int $status Статус код ответа
      * @param string $reasonPhrase Текстовое описание статуса (автоматически определяется, если не указано)
@@ -75,13 +57,8 @@ class Response implements ResponseInterface
      * @param array $headers Заголовки ответа
      * @param string $version Версия протокола
      */
-    public function __construct(
-        int $status = 200,
-        string $reasonPhrase = '',
-        ?StreamInterface $body = null,
-        array $headers = [],
-        string $version = '1.1'
-    ) {
+    public function __construct(int $status = 200, string $reasonPhrase = '', ?StreamInterface $body = null, array $headers = [], string $version = '1.1')
+    {
         $this->_statusCode = $this->validateStatus($status);
 
         if ($reasonPhrase === '' && isset(self::PHRASES[$status])) {
@@ -115,11 +92,6 @@ class Response implements ResponseInterface
     }
 
     // === 3. МЕТОДЫ ИНТЕРФЕЙСА PSR-7 ===
-    public function getStatusCode(): int { return $this->statusCode; }
-    public function getReasonPhrase(): string { return $this->reasonPhrase; }
-    public function getProtocolVersion(): string { return $this->protocolVersion; }
-    public function getHeaders(): array { return $this->headers; }
-    public function getBody(): StreamInterface { return $this->body; }
 
     /**
      * Валидация статус кода
@@ -219,6 +191,31 @@ class Response implements ResponseInterface
         return isset($this->_headers[strtolower($name)]);
     }
 
+    public function getStatusCode(): int
+    {
+        return $this->statusCode;
+    }
+
+    public function getReasonPhrase(): string
+    {
+        return $this->reasonPhrase;
+    }
+
+    public function getProtocolVersion(): string
+    {
+        return $this->protocolVersion;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function getBody(): StreamInterface
+    {
+        return $this->body;
+    }
+
     /**
      * Возвращает значение заголовка в виде строки
      */
@@ -239,7 +236,7 @@ class Response implements ResponseInterface
     /**
      * Возвращает новую копию с измененной версией протокола
      */
-    public function withProtocolVersion($version): MessageInterface
+    public function withProtocolVersion($version): ResponseInterface
     {
         $new = clone $this;
         $new->_protocolVersion = $this->validateProtocolVersion($version);
@@ -249,7 +246,7 @@ class Response implements ResponseInterface
     /**
      * Возвращает новую копию с добавленным значением заголовка
      */
-    public function withAddedHeader($name, $value): MessageInterface
+    public function withAddedHeader($name, $value): ResponseInterface
     {
         $this->validateHeaderName($name);
         $value = $this->validateHeaderValue($value);
@@ -318,7 +315,7 @@ class Response implements ResponseInterface
     /**
      * Возвращает новую копию с замененным заголовком
      */
-    public function withHeader($name, $value): MessageInterface
+    public function withHeader($name, $value): ResponseInterface
     {
         $this->validateHeaderName($name);
         $value = $this->validateHeaderValue($value);
@@ -331,7 +328,7 @@ class Response implements ResponseInterface
     /**
      * Возвращает новую копию с измененным телом
      */
-    public function withBody(StreamInterface $body): MessageInterface
+    public function withBody(StreamInterface $body): ResponseInterface
     {
         $new = clone $this;
         $new->_body = $body;
@@ -427,15 +424,7 @@ class Response implements ResponseInterface
      */
     private function normalizeHeaderName(string $name): string
     {
-        $specialCases = [
-            'etag' => 'ETag',
-            'www-authenticate' => 'WWW-Authenticate',
-            'content-md5' => 'Content-MD5',
-            'dnt' => 'DNT',
-            'tk' => 'Tk',
-            'x-requested-with' => 'X-Requested-With'
-        ];
-
+        $specialCases = ['etag' => 'ETag', 'www-authenticate' => 'WWW-Authenticate', 'content-md5' => 'Content-MD5', 'dnt' => 'DNT', 'tk' => 'Tk', 'x-requested-with' => 'X-Requested-With'];
         return $specialCases[$name] ?? implode('-', array_map('ucfirst', explode('-', $name)));
     }
 
@@ -444,8 +433,6 @@ class Response implements ResponseInterface
      */
     private function isHeadRequest(): bool
     {
-        // Для полного соответствия PSR-7 нужно получить метод запроса
-        // В реальном приложении это должно быть реализовано через ServerRequest
         return isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'HEAD';
     }
 }

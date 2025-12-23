@@ -9,8 +9,8 @@ use RuntimeException;
 
 class Stream implements StreamInterface
 {
-    private const string READ_MODES = '/[r\+]/';
-    private const string WRITE_MODES = '/[wa\+x\+c\+]/';
+    private const string READ_MODES = '/[r+]/';
+    private const string WRITE_MODES = '/[wa+xc]/';
 
     // Используем отдельные свойства для property hooks
     private mixed $_resource;
