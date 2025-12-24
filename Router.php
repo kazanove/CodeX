@@ -89,7 +89,13 @@ class Router implements RequestHandlerInterface
         $this->namedRoutes = [];
 
         foreach ($routes as $item) {
-            ['domain' => $domain, 'method' => $method, 'path' => $path, 'route' => $route, 'is_fallback' => $isFallback] = $item;
+            [
+                'domain' => $domain,
+                'method' => $method,
+                'path' => $path,
+                'route' => $route,
+                'is_fallback' => $isFallback
+            ] = $item;
 
             if ($isFallback) {
                 $this->domainRouter->setFallback($domain, $route);
@@ -255,5 +261,9 @@ class Router implements RequestHandlerInterface
     {
         $this->globalMiddleware = $middleware;
         return $this;
+    }
+    public function setCacheFile(?string $path): void
+    {
+        $this->cacheFile = $path;
     }
 }

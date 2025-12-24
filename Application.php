@@ -126,7 +126,7 @@ class Application
             if (is_array($callback) && count($callback) === 2) {
                 [$class, $method] = $callback;
                 if (class_exists($class) && method_exists($class, $method)) {
-                    call_user_func([$class, $method]);
+                    $this->container->call([$class, $method]);
                 } else {
                     error_log(sprintf('[ЗАВЕРШЕНИЕ РАБОТЫ] Недопустимая функция обратного вызова %s::%s - класс или метод не существует', $class, $method));
                 }
